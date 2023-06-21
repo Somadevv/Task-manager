@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Task } from 'src/app/interfaces/task';
 import { TaskService } from 'src/app/services/task.service';
 
@@ -8,22 +8,27 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
-  tasks: Task[] = [];
-
   constructor(private taskService: TaskService) {}
+
+  @Input() isEditing: boolean = false;
+  selectedTask: Task | undefined;
+  tasks: Task[] = [];
 
   ngOnInit(): void {
     this.fetchTasks();
+  }
+
+  onTaskSelected(task: Task) {
+    if (this.selectedTask === task) {
+      this.selectedTask = undefined;
+    } else {
+      this.selectedTask = task;
+    }
   }
 
   fetchTasks(): void {
     this.taskService.tasks$.subscribe((tasks) => {
       this.tasks = tasks;
     });
-  }
-
-  deleteTask(task: Task): void {
-    this.taskService.deleteTask(task.id);
-    this.fetchTasks();
   }
 }

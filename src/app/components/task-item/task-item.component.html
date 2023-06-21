@@ -1,11 +1,19 @@
 <li
   class="list-group-item"
-  (click)="onSelect(task)"
   [class.active]="task === selectedTask"
+  (click)="onSelect()"
 >
-  {{ task.task }}
+  <div>
+    {{ task.task }}
+  </div>
+
   <div class="action-buttons">
-    <button type="button" class="btn btn-warning" *ngIf="task === selectedTask">
+    <button
+      type="button"
+      class="btn btn-warning"
+      *ngIf="task === selectedTask"
+      (click)="editTask(task)"
+    >
       Edit
     </button>
     <button

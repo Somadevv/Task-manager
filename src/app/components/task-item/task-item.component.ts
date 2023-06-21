@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Task } from 'src/app/interfaces/task';
 import { TaskService } from 'src/app/services/task.service';
 
@@ -11,13 +11,14 @@ export class TaskItemComponent {
   constructor(private taskService: TaskService) {}
 
   @Input() task!: Task;
-  selectedTask: Task | undefined;
+
+  @Input() selectedTask!: Task | undefined;
+  @Output() taskSelected = new EventEmitter<Task>();
 
   onClick() {}
 
-  // On task select
-  onSelect(task: Task) {
-    this.selectedTask = task;
+  onSelect() {
+    this.taskSelected.emit(this.task);
   }
 
   deleteTask(task: Task): void {

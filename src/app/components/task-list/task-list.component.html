@@ -1,3 +1,14 @@
-<ul class="list-group">
-  <app-task-item *ngFor="let task of tasks" [task]="task"></app-task-item>
-</ul>
+<div class="list">
+  <div class="list-header">
+    <h2>Create Task</h2>
+    <button class="btn btn-primary btn-sm">New Task</button>
+  </div>
+  <ul class="list-group">
+    <app-task-item
+      *ngFor="let task of tasks"
+      [task]="task"
+      [selectedTask]="selectedTask"
+      (taskSelected)="onTaskSelected($event)"
+    ></app-task-item>
+  </ul>
+</div>
