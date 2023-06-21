@@ -5,7 +5,7 @@ import { TaskService } from 'src/app/services/task.service';
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css'],
+  styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
@@ -21,7 +21,7 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteTask(task: Task): void {
-    this.taskService.deleteTask(task.id);
+    // this.taskService.deleteTask();
     this.fetchTasks();
   }
 }

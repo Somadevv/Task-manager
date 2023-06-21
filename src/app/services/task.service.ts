@@ -13,9 +13,10 @@ export class TaskService {
     []
   );
   public tasks$ = this.tasksSubject.asObservable();
+  private currentId: number = 1;
 
   constructor() {
-    // Initialize with some default tasks
+    // Initialize with default tasks
     const initialTasks: Task[] = [
       { id: 1, task: 'Task 1', priority: 1, completed: false },
       { id: 2, task: 'Task 2', priority: 2, completed: true },
@@ -29,9 +30,12 @@ export class TaskService {
   }
 
   addTask(task: Task): void {
+    task.id = this.currentId++;
     const currentTasks = this.tasksSubject.getValue();
     const updatedTasks = [...currentTasks, task];
     this.tasksSubject.next(updatedTasks);
+
+    // console.log(this.tasksSubject.getValue());
   }
 
   updateTask(updatedTask: Task): void {

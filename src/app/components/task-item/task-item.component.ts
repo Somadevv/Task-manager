@@ -1,16 +1,24 @@
 import { Component, Input } from '@angular/core';
 import { Task } from 'src/app/interfaces/task';
-import { FormsModule } from '@angular/forms';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-task-item',
   templateUrl: './task-item.component.html',
-  styleUrls: ['./task-item.component.css'],
+  styleUrls: ['./task-item.component.scss'],
 })
 export class TaskItemComponent {
   @Input() task!: Task;
 
-  constructor() {}
+  constructor(private taskService: TaskService) {}
+
+  onClick() {
+    this.taskService.addTask({
+      task: 'as',
+      priority: 1,
+      completed: true,
+    });
+  }
 
   // Add any additional methods or logic specific to the TaskItem component
 }
