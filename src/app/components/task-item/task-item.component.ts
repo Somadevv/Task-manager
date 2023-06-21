@@ -12,13 +12,7 @@ export class TaskItemComponent {
 
   constructor(private taskService: TaskService) {}
 
-  onClick() {
-    this.taskService.addTask({
-      task: 'as',
-      priority: 1,
-      completed: true,
-    });
-  }
+  onClick() {}
 
   // Add any additional methods or logic specific to the TaskItem component
 }

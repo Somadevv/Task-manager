@@ -9,8 +9,14 @@ import { TaskService } from 'src/app/services/task.service';
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
+  selectedTask: Task | undefined;
 
   constructor(private taskService: TaskService) {}
+
+  // On task select
+  onSelect(task: Task) {
+    this.selectedTask = task;
+  }
 
   ngOnInit(): void {
     this.fetchTasks();
@@ -21,7 +27,7 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteTask(task: Task): void {
-    // this.taskService.deleteTask();
+    this.taskService.deleteTask(task.id);
     this.fetchTasks();
   }
 }

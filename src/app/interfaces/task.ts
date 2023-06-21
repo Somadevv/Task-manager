@@ -1,7 +1,7 @@
 export class Task {
   private static lastId: number = 0;
 
-  id?: number;
+  id: number;
   task: string;
   priority: number;
   completed: boolean;
