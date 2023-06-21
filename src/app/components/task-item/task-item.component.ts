@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Task } from 'src/app/interfaces/task';
 import { TaskService } from 'src/app/services/task.service';
 
@@ -8,14 +15,20 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-item.component.scss'],
 })
 export class TaskItemComponent {
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    private modalService: NgbModal
+  ) {}
 
   @Input() task!: Task;
-
   @Input() selectedTask!: Task | undefined;
   @Output() taskSelected = new EventEmitter<Task>();
 
-  onClick() {}
+  // Open edit modal
+  openEditModal(task: Task) {
+    // const modalRef: NgbModalRef = this.modalService.open(EditTaskComponent);
+    // modalRef.componentInstance.task = task;
+  }
 
   onSelect() {
     this.taskSelected.emit(this.task);
@@ -27,5 +40,25 @@ export class TaskItemComponent {
 
   editTask(task: Task): void {
     this.taskService.updateTask(task);
+  }
+
+  // Remove active states on tasks when focus is lost
+  @HostListener('document:click', ['$event.target'])
+  onClick(target: any) {
+    const isOutsideClick = !this.isDescendant(target, 'list-group');
+    if (isOutsideClick) {
+      this.selectedTask = undefined;
+    }
+  }
+
+  private isDescendant(target: any, className: string): boolean {
+    let element = target;
+    while (element) {
+      if (element.classList && element.classList.contains(className)) {
+        return true;
+      }
+      element = element.parentElement;
+    }
+    return false;
   }
 }
