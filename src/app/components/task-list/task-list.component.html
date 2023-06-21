@@ -1,27 +1,3 @@
 <ul class="list-group">
-  <li
-    class="list-group-item"
-    *ngFor="let task of tasks"
-    (click)="onSelect(task)"
-    [class.active]="task === selectedTask"
-  >
-    {{ task.task }}
-    <div class="action-buttons">
-      <button
-        type="button"
-        class="btn btn-warning"
-        *ngIf="task === selectedTask"
-      >
-        Edit
-      </button>
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="deleteTask(task)"
-        *ngIf="task === selectedTask"
-      >
-        X
-      </button>
-    </div>
-  </li>
+  <app-task-item *ngFor="let task of tasks" [task]="task"></app-task-item>
 </ul>

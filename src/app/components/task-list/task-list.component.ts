@@ -9,21 +9,17 @@ import { TaskService } from 'src/app/services/task.service';
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
-  selectedTask: Task | undefined;
 
   constructor(private taskService: TaskService) {}
-
-  // On task select
-  onSelect(task: Task) {
-    this.selectedTask = task;
-  }
 
   ngOnInit(): void {
     this.fetchTasks();
   }
 
   fetchTasks(): void {
-    this.tasks = this.taskService.getTasks();
+    this.taskService.tasks$.subscribe((tasks) => {
+      this.tasks = tasks;
+    });
   }
 
   deleteTask(task: Task): void {

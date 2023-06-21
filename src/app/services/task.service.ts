@@ -25,8 +25,8 @@ export class TaskService {
     this.tasksSubject.next(initialTasks);
   }
 
-  getTasks(): Task[] {
-    return this.tasksSubject.getValue();
+  fetchTasks(): BehaviorSubject<Task[]> {
+    return this.tasksSubject;
   }
 
   addTask(task: Task): void {
@@ -34,8 +34,6 @@ export class TaskService {
     const currentTasks = this.tasksSubject.getValue();
     const updatedTasks = [...currentTasks, task];
     this.tasksSubject.next(updatedTasks);
-
-    // console.log(this.tasksSubject.getValue());
   }
 
   updateTask(updatedTask: Task): void {

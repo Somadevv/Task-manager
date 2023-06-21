@@ -8,11 +8,23 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-item.component.scss'],
 })
 export class TaskItemComponent {
-  @Input() task!: Task;
-
   constructor(private taskService: TaskService) {}
+
+  @Input() task!: Task;
+  selectedTask: Task | undefined;
 
   onClick() {}
 
-  // Add any additional methods or logic specific to the TaskItem component
+  // On task select
+  onSelect(task: Task) {
+    this.selectedTask = task;
+  }
+
+  deleteTask(task: Task): void {
+    this.taskService.deleteTask(task.id);
+  }
+
+  editTask(task: Task): void {
+    this.taskService.updateTask(task);
+  }
 }
