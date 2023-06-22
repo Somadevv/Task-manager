@@ -1,19 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { Task } from '../interfaces/task';
 import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  @Injectable({
-    providedIn: 'root',
-  })
   private tasksSubject: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>(
     []
   );
+
   public tasks$ = this.tasksSubject.asObservable();
+  // public tasks$ = new BehaviorSubject<Task[]>([]);
   private currentId: number = 1;
+  private tasks: Task[] = [];
 
   constructor() {
     // Initialize with default tasks
@@ -37,10 +38,27 @@ export class TaskService {
   }
 
   updateTask(updatedTask: Task): void {
+    this.tasks$.pipe(take(1)).subscribe((tasks) => {
+      const taskIndex = tasks.findIndex((task) => task.id === updatedTask.id);
+      if (taskIndex !== -1) {
+        const updatedTasks = [...tasks];
+        updatedTasks[taskIndex] = updatedTask;
+        this.tasksSubject.next(updatedTasks);
+        console.log(this.tasksSubject.subscribe((s) => console.log('asd', s)));
+      } else {
+        console.log('Task not found');
+      }
+    });
+  }
+
+  createTask(task: Task): void {
     const currentTasks = this.tasksSubject.getValue();
-    const updatedTasks = currentTasks.map((task) =>
-      task.id === updatedTask.id ? { ...task, ...updatedTask } : task
-    );
+    const newTask: Task = {
+      ...task,
+      id: this.currentId++,
+      completed: task.completed,
+    };
+    const updatedTasks = [...currentTasks, newTask];
     this.tasksSubject.next(updatedTasks);
   }
 

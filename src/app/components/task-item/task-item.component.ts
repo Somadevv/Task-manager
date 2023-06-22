@@ -8,6 +8,7 @@ import {
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Task } from 'src/app/interfaces/task';
 import { TaskService } from 'src/app/services/task.service';
+import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 
 @Component({
   selector: 'app-task-item',
@@ -23,23 +24,32 @@ export class TaskItemComponent {
   @Input() task!: Task;
   @Input() selectedTask!: Task | undefined;
   @Output() taskSelected = new EventEmitter<Task>();
+  @Input() isEditing: boolean = false;
 
-  // Open edit modal
-  openEditModal(task: Task) {
-    // const modalRef: NgbModalRef = this.modalService.open(EditTaskComponent);
-    // modalRef.componentInstance.task = task;
+  // Edit task via model
+  editTask(task: Task) {
+    this.isEditing = true;
+    const modalRef: NgbModalRef = this.modalService.open(TaskDialogComponent);
+    modalRef.componentInstance.isEditing = this.isEditing;
+    modalRef.componentInstance.task = task;
   }
 
+  // editTask(updatedTask: Task): void {
+  //   this.taskService.updateTask(updatedTask);
+  // }
+
+  onTaskComplete(checked: boolean): void {
+    this.task.completed = checked;
+    this.taskService.updateTask(this.task);
+  }
+
+  // Emit active event on task select
   onSelect() {
     this.taskSelected.emit(this.task);
   }
 
   deleteTask(task: Task): void {
     this.taskService.deleteTask(task.id);
-  }
-
-  editTask(task: Task): void {
-    this.taskService.updateTask(task);
   }
 
   // Remove active states on tasks when focus is lost

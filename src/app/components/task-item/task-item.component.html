@@ -1,6 +1,7 @@
 <li
   class="list-group-item"
   [class.active]="task === selectedTask"
+  [ngClass]="{ 'task-complete': task && task.completed }"
   (click)="onSelect()"
 >
   <div>
