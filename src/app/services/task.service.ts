@@ -1,68 +1,69 @@
-import { Injectable, Input } from '@angular/core';
-import { Task } from '../interfaces/task';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
+
+class TaskDto {
+  constructor(
+    public id: number,
+    public task: string,
+    public priority: number,
+    public completed: boolean
+  ) {}
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private tasksSubject: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>(
-    []
-  );
+  private tasksSubject: BehaviorSubject<TaskDto[]> = new BehaviorSubject<
+    TaskDto[]
+  >([]);
 
   public tasks$ = this.tasksSubject.asObservable();
-  // public tasks$ = new BehaviorSubject<Task[]>([]);
   private currentId: number = 4;
 
   constructor() {
     // Initialize with default tasks
-    const initialTasks: Task[] = [
-      { id: 1, task: 'Task 1', priority: 1, completed: false },
-      { id: 2, task: 'Task 2', priority: 2, completed: true },
-      { id: 3, task: 'Task 3', priority: 3, completed: false },
+    const initialTasks: TaskDto[] = [
+      new TaskDto(1, 'Task 1', 1, false),
+      new TaskDto(2, 'Task 2', 2, true),
+      new TaskDto(3, 'Task 3', 3, false),
     ];
-    this.tasksSubject.next(initialTasks);
+    this.updateTasks(initialTasks);
   }
 
-  fetchTasks(): BehaviorSubject<Task[]> {
+  updateTasks(tasks: TaskDto[]): void {
+    const sortedTasks = tasks.sort((a, b) => b.priority - a.priority);
+    this.tasksSubject.next(sortedTasks);
+  }
+
+  fetchTasks(): BehaviorSubject<TaskDto[]> {
     return this.tasksSubject;
   }
 
-  addTask(task: Task): void {
+  addTask(task: TaskDto): void {
     task.id = this.currentId++;
     const currentTasks = this.tasksSubject.getValue();
     const updatedTasks = [...currentTasks, task];
-    this.tasksSubject.next(updatedTasks);
+    this.updateTasks(updatedTasks);
   }
 
-  updateTask(updatedTask: Task): void {
+  updateTask(updatedTask: TaskDto): void {
     this.tasks$.pipe(take(1)).subscribe((tasks) => {
       const taskIndex = tasks.findIndex((task) => task.id === updatedTask.id);
       if (taskIndex !== -1) {
         const updatedTasks = [...tasks];
         updatedTasks[taskIndex] = updatedTask;
-        this.tasksSubject.next(updatedTasks);
+        this.updateTasks(updatedTasks);
       } else {
         console.log('Task not found');
       }
     });
   }
 
-  createTask(task: Task): void {
-    const currentTasks = this.tasksSubject.getValue();
-    const newTask: Task = {
-      ...task,
-      id: this.currentId++,
-      completed: task.completed,
-    };
-    const updatedTasks = [...currentTasks, newTask];
-    this.tasksSubject.next(updatedTasks);
-  }
-
   deleteTask(taskId: number): void {
     const currentTasks = this.tasksSubject.getValue();
     const updatedTasks = currentTasks.filter((task) => task.id !== taskId);
-    this.tasksSubject.next(updatedTasks);
+    this.updateTasks(updatedTasks);
   }
 }
