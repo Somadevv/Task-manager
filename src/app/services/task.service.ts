@@ -13,8 +13,7 @@ export class TaskService {
 
   public tasks$ = this.tasksSubject.asObservable();
   // public tasks$ = new BehaviorSubject<Task[]>([]);
-  private currentId: number = 1;
-  private tasks: Task[] = [];
+  private currentId: number = 4;
 
   constructor() {
     // Initialize with default tasks
@@ -44,7 +43,6 @@ export class TaskService {
         const updatedTasks = [...tasks];
         updatedTasks[taskIndex] = updatedTask;
         this.tasksSubject.next(updatedTasks);
-        console.log(this.tasksSubject.subscribe((s) => console.log('asd', s)));
       } else {
         console.log('Task not found');
       }
