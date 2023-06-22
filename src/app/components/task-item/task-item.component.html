@@ -1,6 +1,29 @@
-<div class="task-item">
-  <input type="checkbox" [(ngModel)]="task.completed" />
+<li
+  class="list-group-item"
+  [class.active]="task === selectedTask"
+  [ngClass]="{ 'task-complete': task && task.completed }"
+  (click)="onSelect()"
+>
+  <div>
+    {{ task.task }}
+  </div>
 
-  <span class="task-title">{{ task }}</span>
-  <!-- Add any additional UI elements or buttons related to the task item -->
-</div>
+  <div class="action-buttons">
+    <button
+      type="button"
+      class="btn btn-warning"
+      *ngIf="task === selectedTask"
+      (click)="editTask(task)"
+    >
+      Edit
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      *ngIf="task === selectedTask"
+      (click)="deleteTask(task)"
+    >
+      X
+    </button>
+  </div>
+</li>
