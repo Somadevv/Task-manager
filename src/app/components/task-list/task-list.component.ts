@@ -10,28 +10,24 @@ import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
+  selectedTask: TaskDTO | undefined;
+  tasks: TaskDTO[] = [];
+
   constructor(
     private taskService: TaskService,
     private modalService: NgbModal
   ) {}
-  selectedTask: TaskDTO | undefined;
-  tasks: TaskDTO[] = [];
 
   ngOnInit(): void {
     this.fetchTasks();
   }
 
   onTaskSelected(task: TaskDTO) {
-    console.log(task);
-    if (this.selectedTask === task) {
-      this.selectedTask = undefined;
-    } else {
-      this.selectedTask = task;
-    }
+    this.selectedTask = this.selectedTask === task ? undefined : task;
   }
 
   openTaskCreateModal(): void {
-    const modalRef: NgbModalRef = this.modalService.open(TaskDialogComponent);
+    this.modalService.open(TaskDialogComponent);
   }
 
   fetchTasks(): void {
