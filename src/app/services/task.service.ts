@@ -1,54 +1,55 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-
-class TaskDto {
-  constructor(
-    public id: number,
-    public task: string,
-    public priority: number,
-    public completed: boolean
-  ) {}
-}
+import { TaskDTO } from '../interfaces/task-dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private tasksSubject: BehaviorSubject<TaskDto[]> = new BehaviorSubject<
-    TaskDto[]
+  private tasksSubject: BehaviorSubject<TaskDTO[]> = new BehaviorSubject<
+    TaskDTO[]
   >([]);
 
   public tasks$ = this.tasksSubject.asObservable();
-  private currentId: number = 4;
+  // Start from 4 as we Initialize with 3 tasks, change this accordingly
+
+  initialTasks: TaskDTO[] = [
+    new TaskDTO(1, 'Task 1', 1, false),
+    new TaskDTO(2, 'Task 2', 2, true),
+    new TaskDTO(3, 'Task 3', 3, false),
+  ];
+  // Remove value if no initial tasks assigned -> private currentId!: number;
+  private currentId: number = this.initialTasks.length + 1;
 
   constructor() {
-    // Initialize with default tasks
-    const initialTasks: TaskDto[] = [
-      new TaskDto(1, 'Task 1', 1, false),
-      new TaskDto(2, 'Task 2', 2, true),
-      new TaskDto(3, 'Task 3', 3, false),
-    ];
-    this.updateTasks(initialTasks);
+    this.updateTasks(this.initialTasks);
   }
 
-  updateTasks(tasks: TaskDto[]): void {
+  // Filter tasks by priority
+  updateTasks(tasks: TaskDTO[]): void {
     const sortedTasks = tasks.sort((a, b) => b.priority - a.priority);
     this.tasksSubject.next(sortedTasks);
   }
 
-  fetchTasks(): BehaviorSubject<TaskDto[]> {
+  fetchTasks(): BehaviorSubject<TaskDTO[]> {
     return this.tasksSubject;
   }
 
-  addTask(task: TaskDto): void {
+  createTask(task: TaskDTO): void {
     task.id = this.currentId++;
+    const newTask = new TaskDTO(
+      task.id,
+      task.task,
+      task.priority,
+      task.completed
+    );
     const currentTasks = this.tasksSubject.getValue();
-    const updatedTasks = [...currentTasks, task];
+    const updatedTasks = [...currentTasks, newTask];
     this.updateTasks(updatedTasks);
   }
 
-  updateTask(updatedTask: TaskDto): void {
+  updateTask(updatedTask: TaskDTO): void {
     this.tasks$.pipe(take(1)).subscribe((tasks) => {
       const taskIndex = tasks.findIndex((task) => task.id === updatedTask.id);
       if (taskIndex !== -1) {

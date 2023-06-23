@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Task } from 'src/app/interfaces/task';
+import { TaskDTO } from 'src/app/interfaces/task-dto';
 import { TaskService } from 'src/app/services/task.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 
@@ -14,14 +14,15 @@ export class TaskListComponent implements OnInit {
     private taskService: TaskService,
     private modalService: NgbModal
   ) {}
-  selectedTask: Task | undefined;
-  tasks: Task[] = [];
+  selectedTask: TaskDTO | undefined;
+  tasks: TaskDTO[] = [];
 
   ngOnInit(): void {
     this.fetchTasks();
   }
 
-  onTaskSelected(task: Task) {
+  onTaskSelected(task: TaskDTO) {
+    console.log(task);
     if (this.selectedTask === task) {
       this.selectedTask = undefined;
     } else {

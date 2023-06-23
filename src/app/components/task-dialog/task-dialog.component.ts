@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Task } from 'src/app/interfaces/task';
+import { TaskDTO } from 'src/app/interfaces/task-dto';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class TaskDialogComponent implements OnInit {
   }
 
   @Input() isEditing: boolean = false;
-  @Input() task!: Task;
+  @Input() task!: TaskDTO;
 
   createForm!: FormGroup;
 
@@ -47,7 +47,7 @@ export class TaskDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.createForm.valid) {
       const formData = this.createForm.value;
-      const updatedTask: Task = {
+      const updatedTask: TaskDTO = {
         id: formData.id, // Set the ID property
         task: formData.task,
         priority: formData.priority,
@@ -59,8 +59,7 @@ export class TaskDialogComponent implements OnInit {
         this.taskService.updateTask(updatedTask);
         this.modalService.dismissAll();
       } else {
-        console.log('Task Created', updatedTask);
-        this.taskService.addTask(updatedTask);
+        this.taskService.createTask(updatedTask);
         this.modalService.dismissAll();
       }
     } else {
