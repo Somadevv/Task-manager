@@ -10,15 +10,22 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-dialog.component.scss'],
 })
 export class TaskDialogComponent implements OnInit {
+  @Input() isEditing = false;
+  @Input() task!: TaskDTO;
+
+  createForm!: FormGroup;
+
   constructor(
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
     private taskService: TaskService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.createForm = this.formBuilder.group({
-      id: 1,
+      id: [this.task?.id || 1],
       task: [
-        '',
+        this.task?.task || '',
         [
           Validators.required,
           Validators.minLength(3),
@@ -26,19 +33,12 @@ export class TaskDialogComponent implements OnInit {
         ],
       ],
       priority: [
-        '',
+        this.task?.priority || '',
         [Validators.required, Validators.min(1), Validators.max(100)],
       ],
-      complete: [false],
+      complete: [this.task?.completed || false],
     });
   }
-
-  @Input() isEditing: boolean = false;
-  @Input() task!: TaskDTO;
-
-  createForm!: FormGroup;
-
-  ngOnInit(): void {}
 
   closeDialog(): void {
     this.modalService.dismissAll();
@@ -67,10 +67,9 @@ export class TaskDialogComponent implements OnInit {
       this.createForm.markAllAsTouched();
     }
   }
+
   onTaskComplete(checked: boolean): void {
-    if (this.createForm.controls['complete']) {
-      this.createForm.controls['complete'].setValue(checked);
-    }
+    this.createForm.controls['complete'].setValue(checked);
   }
 
   get taskFormControl() {
