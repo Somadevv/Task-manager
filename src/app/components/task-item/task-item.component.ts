@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Task } from 'src/app/interfaces/task';
+import { TaskDTO } from 'src/app/interfaces/task-dto';
 import { TaskService } from 'src/app/services/task.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 
@@ -21,22 +21,22 @@ export class TaskItemComponent {
     private modalService: NgbModal
   ) {}
 
-  @Input() task!: Task;
-  @Input() selectedTask!: Task | undefined;
-  @Output() taskSelected = new EventEmitter<Task>();
+  @Input() task!: TaskDTO;
+  @Input() tasks: TaskDTO[] = [];
+  @Input() selectedTask!: TaskDTO | undefined;
+  @Output() taskSelected = new EventEmitter<TaskDTO>();
   @Input() isEditing: boolean = false;
 
   // Edit task via model
-  editTask(task: Task) {
+  editTask(task: TaskDTO) {
     this.isEditing = true;
     const modalRef: NgbModalRef = this.modalService.open(TaskDialogComponent);
     modalRef.componentInstance.isEditing = this.isEditing;
     modalRef.componentInstance.task = task;
   }
-
-  // editTask(updatedTask: Task): void {
-  //   this.taskService.updateTask(updatedTask);
-  // }
+  isOddIndex(): boolean {
+    return this.tasks.indexOf(this.task) % 2 !== 0;
+  }
 
   onTaskComplete(checked: boolean): void {
     this.task.completed = checked;
@@ -48,7 +48,7 @@ export class TaskItemComponent {
     this.taskSelected.emit(this.task);
   }
 
-  deleteTask(task: Task): void {
+  deleteTask(task: TaskDTO): void {
     this.taskService.deleteTask(task.id);
   }
 
