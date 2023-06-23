@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TaskDTO } from 'src/app/interfaces/task-dto';
 import { TaskService } from 'src/app/services/task.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
@@ -16,26 +16,22 @@ import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
   styleUrls: ['./task-item.component.scss'],
 })
 export class TaskItemComponent {
+  @Input() task!: TaskDTO;
+  @Input() tasks: TaskDTO[] = [];
+  @Input() selectedTask!: TaskDTO | undefined;
+  @Output() taskSelected = new EventEmitter<TaskDTO>();
+  @Input() isEditing = false;
+
   constructor(
     private taskService: TaskService,
     private modalService: NgbModal
   ) {}
 
-  @Input() task!: TaskDTO;
-  @Input() tasks: TaskDTO[] = [];
-  @Input() selectedTask!: TaskDTO | undefined;
-  @Output() taskSelected = new EventEmitter<TaskDTO>();
-  @Input() isEditing: boolean = false;
-
-  // Edit task via model
-  editTask(task: TaskDTO) {
+  editTask(task: TaskDTO): void {
     this.isEditing = true;
-    const modalRef: NgbModalRef = this.modalService.open(TaskDialogComponent);
+    const modalRef = this.modalService.open(TaskDialogComponent);
     modalRef.componentInstance.isEditing = this.isEditing;
     modalRef.componentInstance.task = task;
-  }
-  isOddIndex(): boolean {
-    return this.tasks.indexOf(this.task) % 2 !== 0;
   }
 
   onTaskComplete(checked: boolean): void {
@@ -43,8 +39,7 @@ export class TaskItemComponent {
     this.taskService.updateTask(this.task);
   }
 
-  // Emit active event on task select
-  onSelect() {
+  onSelect(): void {
     this.taskSelected.emit(this.task);
   }
 
@@ -52,9 +47,8 @@ export class TaskItemComponent {
     this.taskService.deleteTask(task.id);
   }
 
-  // Remove active states on tasks when focus is lost
   @HostListener('document:click', ['$event.target'])
-  onClick(target: any) {
+  onClick(target: any): void {
     const isOutsideClick = !this.isDescendant(target, 'list-group');
     if (isOutsideClick) {
       this.selectedTask = undefined;
