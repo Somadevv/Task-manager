@@ -1,1 +1,92 @@
-<p>task-dialog works!</p>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    {{ isEditing ? "Edit Task" : "Create new Task" }}
+  </h4>
+  <button type="button" class="btn btn-danger" (click)="closeDialog()">
+    X
+  </button>
+</div>
+<form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="task">Task</label>
+
+    <input
+      type="text"
+      class="form-control"
+      id="task"
+      placeholder="{{ task ? task.task : 'Clean house' }}"
+      formControlName="task"
+      [min]="1"
+      [max]="10"
+    />
+    <small id="taskHelp" class="form-text text-muted"
+      >Character Restrictions: Minimum 3, Maximum 25</small
+    >
+  </div>
+  <div class="form-group">
+    <label for="priority">Priority</label>
+    <input
+      type="number"
+      class="form-control"
+      id="priority"
+      placeholder="{{ task ? task.priority : '0' }}"
+      formControlName="priority"
+    />
+    <small id="priorityHelp" class="form-text text-muted">
+      Value must be between 1 and 10.
+    </small>
+    <div
+      *ngIf="
+        createForm.get('priority')?.invalid &&
+        (createForm.get('priority')?.dirty ||
+          createForm.get('priority')?.touched)
+      "
+    >
+      <div *ngIf="createForm.get('priority')?.errors?.['required']">
+        Priority is required.
+      </div>
+      <div *ngIf="createForm.get('priority')?.errors?.['min']">
+        Priority must be at least 1.
+      </div>
+      <div *ngIf="createForm.get('priority')?.errors?.['max']">
+        Priority cannot exceed 100.
+      </div>
+    </div>
+  </div>
+  <div class="form-group form-check" id="completeCheck">
+    <input
+      type="checkbox"
+      formControlName="complete"
+      class="form-check-input"
+      [checked]="(task && task.completed) || false"
+    />
+
+    <label class="form-check-label" for="complete">Mark as Complete</label>
+    <div
+      *ngIf="
+        taskFormControl?.invalid &&
+        (taskFormControl?.dirty || taskFormControl?.touched)
+      "
+    >
+      <div *ngIf="taskErrors?.['required']">Task is required.</div>
+      <div *ngIf="taskErrors?.['minlength']">
+        Task must be at least 3 characters long.
+      </div>
+      <div *ngIf="taskErrors?.['maxlength']">
+        Task cannot exceed 25 characters.
+      </div>
+    </div>
+  </div>
+
+  <!-- Other form fields -->
+
+  <div class="form-group">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="createForm.invalid"
+    >
+      {{ isEditing ? "Save" : "Create" }}
+    </button>
+  </div>
+</form>

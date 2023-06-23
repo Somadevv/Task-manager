@@ -1,0 +1,18 @@
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  &:first-child {
+    border-radius: 0.25rem;
+  }
+
+  .task-priority {
+    font-size: 0.75rem;
+  }
+}
+
+.task-complete {
+  border-left: 4px green solid;
+}
