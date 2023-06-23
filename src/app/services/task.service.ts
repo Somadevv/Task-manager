@@ -12,21 +12,19 @@ export class TaskService {
   >([]);
 
   public tasks$ = this.tasksSubject.asObservable();
-  // Start from 4 as we Initialize with 3 tasks, change this accordingly
+  private currentId: number;
 
-  initialTasks: TaskDTO[] = [
+  constructor() {
+    this.currentId = this.initialTasks.length + 1;
+    this.updateTasks(this.initialTasks);
+  }
+
+  private initialTasks: TaskDTO[] = [
     new TaskDTO(1, 'Task 1', 1, false),
     new TaskDTO(2, 'Task 2', 2, true),
     new TaskDTO(3, 'Task 3', 3, false),
   ];
-  // Remove value if no initial tasks assigned -> private currentId!: number;
-  private currentId: number = this.initialTasks.length + 1;
 
-  constructor() {
-    this.updateTasks(this.initialTasks);
-  }
-
-  // Filter tasks by priority
   updateTasks(tasks: TaskDTO[]): void {
     const sortedTasks = tasks.sort((a, b) => b.priority - a.priority);
     this.tasksSubject.next(sortedTasks);
